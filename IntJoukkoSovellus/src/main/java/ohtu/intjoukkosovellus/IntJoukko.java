@@ -25,10 +25,10 @@ public class IntJoukko {
     
     private void joukonAlustus(int kapasiteetti, int kasvatuskoko) {
         if (kapasiteetti < 0) {
-            throw new IndexOutOfBoundsException("Kapasitteetti väärin");//heitin vaan jotain :D
+            throw new IndexOutOfBoundsException("Kapasitteetti väärin");
         }
         if (kasvatuskoko < 0) {
-            throw new IndexOutOfBoundsException("kapasiteetti2");//heitin vaan jotain :D
+            throw new IndexOutOfBoundsException("Kasvatuskoon pitää olla positiivinen");
         }
         jononLuvut = new int[kapasiteetti];
         for (int i = 0; i < jononLuvut.length; i++) {
@@ -62,47 +62,32 @@ public class IntJoukko {
     }
     
     public boolean kuuluuJoukkoon(int luku) {
-        int on = 0;
         for (int i = 0; i < alkioidenLkm; i++) {
             if (luku == jononLuvut[i]) {
-                on++;
+                return true;
             }
         }
-        if (on > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return false;
     }
 
     public boolean poista(int luku) {
-        int kohta = -1;
-        int apu;
         for (int i = 0; i < alkioidenLkm; i++) {
             if (luku == jononLuvut[i]) {
-                kohta = i; //siis luku löytyy tuosta kohdasta :D
-                jononLuvut[kohta] = 0;
-                break;
+                jononLuvut[i] = 0;
+                for (int j = i; j < alkioidenLkm - 1; j++) {
+                    int apu = jononLuvut[j];
+                    jononLuvut[j] = jononLuvut[j + 1];
+                    jononLuvut[j + 1] = apu;
+                }
+                alkioidenLkm--;
+                return true;
             }
         }
-        if (kohta != -1) {
-            for (int j = kohta; j < alkioidenLkm - 1; j++) {
-                apu = jononLuvut[j];
-                jononLuvut[j] = jononLuvut[j + 1];
-                jononLuvut[j + 1] = apu;
-            }
-            alkioidenLkm--;
-            return true;
-        }
-
-
         return false;
     }
 
     private void kopioiTaulukko(int[] vanha, int[] uusi) {
-        for (int i = 0; i < vanha.length; i++) {
-            uusi[i] = vanha[i];
-        }
+        System.arraycopy(vanha, 0, uusi, 0, vanha.length);
 
     }
 
@@ -113,27 +98,24 @@ public class IntJoukko {
 
     @Override
     public String toString() {
-        if (alkioidenLkm == 0) {
-            return "{}";
-        } else if (alkioidenLkm == 1) {
-            return "{" + jononLuvut[0] + "}";
-        } else {
-            String tuotos = "{";
-            for (int i = 0; i < alkioidenLkm - 1; i++) {
-                tuotos += jononLuvut[i];
-                tuotos += ", ";
-            }
-            tuotos += jononLuvut[alkioidenLkm - 1];
-            tuotos += "}";
-            return tuotos;
+        switch (alkioidenLkm) {
+            case 0:
+                return "{}";
+            case 1:
+                return "{" + jononLuvut[0] + "}";
+            default:
+                String tuotos = "{";
+                for (int i = 0; i < alkioidenLkm - 1; i++) {
+                    tuotos += jononLuvut[i] + ", ";
+                }
+                tuotos += jononLuvut[alkioidenLkm - 1] + "}";
+                return tuotos;
         }
     }
 
     public int[] toIntArray() {
         int[] taulu = new int[alkioidenLkm];
-        for (int i = 0; i < taulu.length; i++) {
-            taulu[i] = jononLuvut[i];
-        }
+        System.arraycopy(jononLuvut, 0, taulu, 0, taulu.length);
         return taulu;
     }
    
